@@ -1,13 +1,13 @@
 # Askless: **A coherent Node.js Backend for Flutter**
 
-A framework to build websocket servers for Flutter Apps that lets you update your widgets in realtime by streaming data changes with WebSockets. Create your Flutter App without Firebase, with PostgreSQL, MySQL, or any database you want, handle WebSocket authentication, and quickly add audio and video calls with WebRTC!
+A framework to build websocket servers for Flutter Apps that lets you update your widgets in realtime by streaming data changes with WebSockets. Create your Flutter App without Firebase, with PostgreSQL, MySQL, or any database you want, and handle WebSocket authentication
 
 This is the server side in Node.js,
 **[click here to access the Askless Flutter Client](https://github.com/RodrigoBertotti/askless-flutter-client)**
 
 ## Built with Askless
 
-Check the example of a [Flutter Chat App with Node.js, WebSockets and MySQL](https://github.com/RodrigoBertotti/flutter_chat_app_with_nodejs), also supports video and audio calls.
+Check the example of a [Flutter Chat App with Node.js, WebSockets and MySQL](https://github.com/RodrigoBertotti/flutter_chat_app_with_nodejs).
 
 https://github.com/RodrigoBertotti/flutter_chat_app_with_nodejs/assets/15431956/42428123-76ab-4c5c-8ba1-29321d11b74b
 
@@ -22,7 +22,7 @@ https://github.com/RodrigoBertotti/flutter_chat_app_with_nodejs/assets/15431956/
 * <sup>Level:</sup> <sup>:red_circle: :white_circle: :white_circle: :white_circle: :white_circle:</sup> [Flutter Random Numbers Example](example/random-numbers-ts): Random numbers are generated on the server.
 * <sup>Level:</sup> <sup>:red_circle: :red_circle: :white_circle: :white_circle: :white_circle:</sup> [Flutter Simple Chat Example](example/simple-chat-ts): Simple chat between the colors blue and green.    
 * <sup>Level:</sup> <sup>:red_circle: :red_circle: :red_circle: :white_circle: :white_circle:</sup> [Flutter Catalog Example](https://github.com/RodrigoBertotti/askless-flutter-client/tree/dev/example/catalog): Users adding and removing products from a catalog.
-* <sup>Level:</sup> <sup>:red_circle: :red_circle: :red_circle: :red_circle: :red_circle:</sup> [Flutter Chat App with MySQL or PostgreSQL + video and audio calls](https://github.com/RodrigoBertotti/flutter_chat_app_with_nodejs): A Flutter Chat App with MySQL, WebSockets, and Node.js, supports live video and audio calls streaming with WebRTC in Flutter
+* <sup>Level:</sup> <sup>:red_circle: :red_circle: :red_circle: :red_circle: :red_circle:</sup> [Flutter Chat App with MySQL or PostgreSQL ](https://github.com/RodrigoBertotti/flutter_chat_app_with_nodejs): A Flutter Chat App with MySQL, WebSockets, and Node.js
 
 ## Getting Started
 
