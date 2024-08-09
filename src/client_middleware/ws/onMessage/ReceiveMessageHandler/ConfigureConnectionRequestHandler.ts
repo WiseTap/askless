@@ -54,6 +54,7 @@ export class ConfigureConnectionRequestHandler {
         };
         clientInfo.onClose = () => {
             this.askless.logger("onClose websocket " + clientWsEndpoint[ws_clientIdInternalApp], "debug");
+            this.askless.logger("stopListening #2 (on close websocket): "+(clientInfo.userId ?? ''), "debug");
 
             Array.from(clientInfo.routesBeingListen).forEach((routeBeingListen) => {
                this.askless.getReadRoute(routeBeingListen.route).stopListening(clientInfo.clientIdInternalApp, routeBeingListen.listenId, routeBeingListen.route);

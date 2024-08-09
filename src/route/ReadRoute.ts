@@ -324,26 +324,36 @@ abstract class _ReadRoute<ENTITY, LOGGED_IN_OR_NOT, LOCALS extends (Authenticate
     //   return;
     // }
     return new Promise<String|undefined>(async (resolve) => {
-      this.stopListening(  clientIdInternalApp, listenId, this.route);
-      const clientInfo = this.askless.clientMiddleware.clients.getOrCreateClientInfo(  clientIdInternalApp);
+      this.askless.logger("listen @internal "+listenId, "debug");
+
+      const clientInfo = this.askless.clientMiddleware.clients.getOrCreateClientInfo(clientIdInternalApp);
       // const start = Date.now();
       const locals = Object.assign({}, clientInfo.locals);
 
-      clientInfo.routesBeingListen.push({
-        clientIdInternalApp: clientIdInternalApp,
-        listenId: listenId,
-        route: this.route,
-        params: params,
-        locals: locals,
-        authenticationStatus: this.authenticationStatus,
-      });
-
+      if (listenId) {
+        const existingIndex = clientInfo.routesBeingListen.findIndex((c) => c.listenId == listenId);
+        const prev = existingIndex != -1 ? clientInfo.routesBeingListen[existingIndex] : {};
+        const data = Object.assign(prev, {
+          clientIdInternalApp: clientIdInternalApp,
+          listenId: listenId,
+          route: this.route,
+          params: params,
+          locals: locals,
+          authenticationStatus: this.authenticationStatus,
+          at: new Date(),
+        });
+        if (existingIndex != -1) {
+          clientInfo.routesBeingListen[existingIndex] = data;
+        } else {
+          clientInfo.routesBeingListen.push(data);
+        }
+      }
       let _getEntity: () => ENTITY;
       let response;
       if (this.authenticationStatus == "authenticatedOnly" && clientInfo.authentication != "authenticated") {
         response = new AsklessError({
           code: AsklessErrorCode.PENDING_AUTHENTICATION,
-          description: "Could not perform the operation on (LISTEN) \""+this.route+"\" because authentication is required",
+          description: "Could not perform the operation on (LISTEN) \""+this.route+"\" because authentication is required, but user authentication is "+clientInfo.authentication,
         });
       } else {
         response = await this.readInternal({
@@ -384,7 +394,8 @@ abstract class _ReadRoute<ENTITY, LOGGED_IN_OR_NOT, LOCALS extends (Authenticate
         );
         if (error?.code == AsklessErrorCode.PERMISSION_DENIED || error?.code == AsklessErrorCode.PENDING_AUTHENTICATION) {
           this.askless.logger("listen: the error is \""+error.code+"\", calling stopListening...", "error", error);
-          this.stopListening(  clientIdInternalApp, listenId, this.route);
+          this.askless.logger("stopListening #4", "debug");
+          await this.stopListening(  clientIdInternalApp, listenId, this.route);
           this.askless.logger("onClientStartsListening not called", "error");
         }
         resolve(undefined);
@@ -461,10 +472,10 @@ abstract class _ReadRoute<ENTITY, LOGGED_IN_OR_NOT, LOCALS extends (Authenticate
   toOutput(entity: ENTITY):any {};
 
   /** @internal */
-  stopListening(clientIdInternalApp: string,
+  async stopListening(clientIdInternalApp: string,
     listenId?:string,
-    route?: string
-  ): void {
+    route?: string,
+  ): Promise<void> {
     if (clientIdInternalApp == null) throw Error("clientIdInternalApp is undefined");
     if (listenId == null && route != null)
       throw Error("please, inform the listenId");
@@ -483,19 +494,21 @@ abstract class _ReadRoute<ENTITY, LOGGED_IN_OR_NOT, LOCALS extends (Authenticate
     if (!remove.length){
       this.askless.logger("stopListening: NO item for "+(this.route ?? 'unknown route') + " listenId: "+listenId + '  ' +JSON.stringify(clientInfo.routesBeingListen.map(e => e.listenId + " ("+e.route+")")), "debug");
     }
-    remove.forEach(async (p) => {
-      const context:AuthenticateUserContext<any> & ClientAndRouteContext = {
-        userId: clientInfo.userId,
-        claims: clientInfo.claims,
-        locals: p.locals,
-        params: p.params,
-      };
-      await this.onClientStopsListening(context as any);
-    });
-    remove.forEach((r) => {
-          clientInfo.routesBeingListen.splice(clientInfo.routesBeingListen.indexOf(r), 1);
-        }
-    );
+    for (let r=0;r<remove.length;r++){
+      clientInfo.routesBeingListen.splice(clientInfo.routesBeingListen.indexOf(remove[r]), 1);
+    }
+    for (let r=0;r<remove.length;r++){
+      const p = remove[r];
+      if (!clientInfo.routesBeingListen.find((r => r.route == p.route))) {
+        const context: AuthenticateUserContext<any> & ClientAndRouteContext = {
+          userId: clientInfo.userId,
+          claims: clientInfo.claims,
+          locals: p.locals,
+          params: p.params,
+        };
+        await this.onClientStopsListening(context as any);
+      }
+    }
   }
 }
 

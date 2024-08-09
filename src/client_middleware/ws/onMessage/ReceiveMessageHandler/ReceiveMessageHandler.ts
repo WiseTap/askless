@@ -207,7 +207,7 @@ class _RunModifyOperationInApp extends _RunOperationInApp {
     if (route.authenticationStatus == "authenticatedOnly" && clientInfo.authentication != "authenticated") {
       res = new AsklessError({
         code: AsklessErrorCode.PENDING_AUTHENTICATION,
-        description: "Could not perform the operation on ("+route.requestType+") \""+route.route+"\" because authentication is required",
+        description: "Could not perform the operation on ("+route.requestType+") \""+route.route+"\" because authentication is required, but user authentication is "+clientInfo.authentication,
       });
     } else if (data.requestType == RequestType.DELETE) {
       res = await (route as DeleteRoute<any, any, AuthenticateUserContext<any>>).deletePromise(params);

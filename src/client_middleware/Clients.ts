@@ -44,7 +44,8 @@ export type RouteBeingListen = {
   listenId: string;
   params;
   locals;
-  authenticationStatus:"authenticatedOrNot" | "authenticatedOnly"
+  authenticationStatus:"authenticatedOrNot" | "authenticatedOnly";
+  at: Date
 };
 /** @internal */
 export class ClientInfo {
@@ -96,6 +97,8 @@ export class Clients {
   constructor(public readonly askless:AsklessServer) {}
 
   stopListening(clientInfo: ClientInfo, listenId: string) {
+    this.askless.logger("stopListening #1: "+(clientInfo.userId ?? '') + '  ' + listenId, "debug");
+
     const routeBeingListen = clientInfo.routesBeingListen.find(
       (s) => s.listenId == listenId
     );
@@ -176,15 +179,6 @@ export class Clients {
     delete this.clientIdInternalApp_clientInfo[clientIdInternalApp];
   }
 
-  // getClientByUserId(userId: USER_ID) : ClientInfo | null {
-  //   for (const clientIdInternalApp of Object.keys(this.clientIdInternalApp_clientInfo)) {
-  //     const client = this.clientIdInternalApp_clientInfo[clientIdInternalApp];
-  //     if (client.userId.toString() == userId.toString()) {
-  //       return client;
-  //     }
-  //   }
-  //   return null;
-  // }
   getClientInfoByUserId(userId) {
     return Object.values(this.clientIdInternalApp_clientInfo).find((item:ClientInfo )=> item.userId == userId);
   }

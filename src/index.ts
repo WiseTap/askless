@@ -248,7 +248,7 @@ export class AsklessServer<USER_ID = string | number> {
     if (config.authenticate == null) {
       config.authenticate = async (_, accept) => { accept.asUnauthenticatedUser(); }
     }
-    config["reconnectClientAfterMillisecondsWithoutServerPong"] = 6 * 1000;
+    config["reconnectClientAfterMillisecondsWithoutServerPong"] = 6 * 1000; // TODO: add type to configuration
     config[
         "intervalInMillsecondsCheckIfIsNeededToClearRuntimeDataFromDisconnectedClient"
     ] = 53 * 1000; //(10x + 3 intervalInSecondsClientPong) in this way, the client can still receive the responde in case he disconnects
