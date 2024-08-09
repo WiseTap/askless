@@ -1,5 +1,4 @@
 import * as WebSocket from "ws";
-import { ServerOptions } from "ws";
 import { SendMessageToClientAgainTask } from "./tasks/SendMessageToClientAgainTask";
 import { environment } from "./environment";
 import {
@@ -147,7 +146,7 @@ export interface IServerConfiguration<USER_ID> {
    * The websocket configuration for {@link https://github.com/websockets/ws ws} (optional).
    * Default: `{ port: 3000 }`.
    * */
-  wsOptions?: ServerOptions;
+  wsOptions?: any;
 }
 
 //https://stackoverflow.com/a/8440736/4508758
